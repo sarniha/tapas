@@ -6,6 +6,7 @@ from app.routers import food_logs
 from app.routers import workout_logs
 from app.routers import dashboard
 from app.routers import check_ins
+from app.routers import recommendations
 
 
 
@@ -26,6 +27,7 @@ app.include_router(auth.router)
 
 app.include_router(workout_logs.router)
 
+app.include_router(recommendations.router)
 
 app.include_router(food_logs.router)
 

@@ -8,7 +8,7 @@ from app.models import food_log
  # noqa: F401 
 from app.models import workout_log 
 from app.models import daily_check_in  # noqa: F401
-
+from app.models import ai_recommendation  # noqa: F401
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
