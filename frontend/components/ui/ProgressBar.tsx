@@ -1,42 +1,59 @@
-import { View, Text } from "react-native";
+import { useEffect, useRef } from "react";
+import { View, Animated, StyleSheet } from "react-native";
 
 interface ProgressBarProps {
-  label: string;
-  actual: number;
-  target: number;
-  unit?: string;
-  color?: string;
+  /** Progress value between 0 and 1 */
+  value: number;
+  /** Fill color */
+  color: string;
+  /** Bar height in pixels */
+  height?: number;
 }
 
 export function ProgressBar({
-  label,
-  actual,
-  target,
-  unit = "g",
-  color = "#7C3AED",
+  value,
+  color,
+  height = 8,
 }: ProgressBarProps) {
-  const pct = Math.min((actual / target) * 100, 100);
-  const over = actual > target;
+  const clampedValue = Math.min(Math.max(value, 0), 1);
+  const animatedWidth = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(animatedWidth, {
+      toValue: clampedValue,
+      duration: 600,
+      useNativeDriver: false,
+    }).start();
+  }, [clampedValue, animatedWidth]);
 
   return (
-    <View className="mb-3">
-      <View className="flex-row justify-between mb-1">
-        <Text className="text-text-secondary text-sm">{label}</Text>
-        <Text className="text-text-primary text-sm font-medium">
-          {actual}
-          <Text className="text-text-secondary">/{target}{unit}</Text>
-        </Text>
-      </View>
-      <View className="h-2 bg-gray-100 rounded-full overflow-hidden">
-        <View
-          style={{
-            width: `${pct}%`,
-            backgroundColor: over ? "#EF4444" : color,
-            height: "100%",
+    <View style={[styles.track, { height, borderRadius: 999 }]}>
+      <Animated.View
+        style={[
+          styles.fill,
+          {
+            height,
             borderRadius: 999,
-          }}
-        />
-      </View>
+            backgroundColor: color,
+            width: animatedWidth.interpolate({
+              inputRange: [0, 1],
+              outputRange: ["0%", "100%"],
+            }),
+          },
+        ]}
+      />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  track: {
+    backgroundColor: "#E5E7EB",
+    overflow: "hidden",
+  },
+  fill: {
+    position: "absolute",
+    left: 0,
+    top: 0,
+  },
+});

@@ -7,8 +7,11 @@ interface InputProps extends TextInputProps {
   secureToggle?: boolean;
 }
 
-export function Input({ label, error, secureToggle, secureTextEntry, ...props }: InputProps) {
+export function Input({ label, error, secureToggle, secureTextEntry, onFocus, onBlur, ...props }: InputProps) {
   const [visible, setVisible] = useState(false);
+  const [focused, setFocused] = useState(false);
+
+  const borderColor = error ? "#EF4444" : focused ? "#7C3AED" : "#E5E7EB";
 
   return (
     <View className="mb-4">
@@ -17,9 +20,16 @@ export function Input({ label, error, secureToggle, secureTextEntry, ...props }:
       )}
       <View className="relative">
         <TextInput
-          className={`bg-card border rounded-btn px-4 py-3 text-text-primary text-base ${
-            error ? "border-danger" : "border-gray-200"
-          }`}
+          className="bg-card border rounded-btn px-4 py-3 text-text-primary text-base"
+          style={{ borderColor }}
+          onFocus={(e) => {
+            setFocused(true);
+            onFocus?.(e);
+          }}
+          onBlur={(e) => {
+            setFocused(false);
+            onBlur?.(e);
+          }}
           placeholderTextColor="#9CA3AF"
           secureTextEntry={secureToggle ? !visible : secureTextEntry}
           {...props}

@@ -8,7 +8,7 @@ interface AuthState {
   isOnboarded: boolean;
   isLoading: boolean;
   setTokens: (access: string, refresh: string) => Promise<void>;
-  setOnboarded: (val: boolean) => void;
+  setOnboarded: (val: boolean) =>Promise<void>;
   logout: () => Promise<void>;
   loadFromStorage: () => Promise<void>;
 }
@@ -25,20 +25,26 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ accessToken: access, isAuthenticated: true });
   },
 
-  setOnboarded: (val) => set({ isOnboarded: val }),
+  setOnboarded: async (val) => {
+    await SecureStore.setItemAsync("isOnboarded", val ? "true" : "false");
+    set({ isOnboarded: val });
+  },
 
   logout: async () => {
     await SecureStore.deleteItemAsync(TOKEN_KEY);
     await SecureStore.deleteItemAsync(REFRESH_TOKEN_KEY);
     set({ accessToken: null, isAuthenticated: false, isOnboarded: false });
   },
-
   loadFromStorage: async () => {
     const token = await SecureStore.getItemAsync(TOKEN_KEY);
+    const onboarded = await SecureStore.getItemAsync("isOnboarded");
     set({
       accessToken: token,
       isAuthenticated: !!token,
+      isOnboarded: onboarded === "true",
       isLoading: false,
     });
   },
+
+  
 }));

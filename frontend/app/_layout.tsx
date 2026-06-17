@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Stack, useRouter, useSegments } from "expo-router";
+import { Stack, useRouter, useSegments, Href } from "expo-router";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { StatusBar } from "expo-status-bar";
 import { queryClient } from "../lib/queryClient";
@@ -26,7 +26,7 @@ function AuthGate({ children }: { children: React.ReactNode }) {
     } else if (isAuthenticated && !isOnboarded && !inOnboarding) {
       router.replace("/(onboarding)/step1-personal");
     } else if (isAuthenticated && isOnboarded && (inAuth || inOnboarding)) {
-      router.replace("/(tabs)/");
+      router.replace("/(tabs)" as Href);
     }
   }, [isAuthenticated, isOnboarded, isLoading]);
 
