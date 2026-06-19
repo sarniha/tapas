@@ -48,3 +48,23 @@ class UserUpdateRequest(BaseModel):
     activity_level: Optional[str] = None
     goal: Optional[str] = None
     dietary_preference: Optional[str] = None
+
+class UserProfileResponse(BaseModel):
+    id: int
+    email: str
+    name: str
+    age: Optional[int] = None
+    gender: Optional[str] = None
+    height_cm: Optional[float] = None
+    weight_kg: Optional[float] = None
+    activity_level: Optional[str] = None
+    goal: Optional[str] = None
+    dietary_preference: Optional[str] = None
+    daily_calorie_target: Optional[float] = None
+    daily_protein_target: Optional[float] = None
+    daily_carb_target: Optional[float] = None
+    daily_fat_target: Optional[float] = None
+    is_onboarded: bool = False  # ADD THIS
+
+    class Config:
+        from_attributes = True    
